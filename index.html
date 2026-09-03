@@ -45,6 +45,44 @@ td input,td select{width:100%;padding:6px 8px;border-radius:8px;border:1px solid
 .footer{margin-top:10px;font-size:11px;color:#6b7280;display:flex;justify-content:space-between}
 .screen-only{display:block}
 .print-only{display:none}
+@media (max-width:700px){
+html{overflow-x:hidden}
+body{background:#eef3fb;overflow-x:hidden}
+.container{width:100%;max-width:none;margin:0;padding:14px 12px 28px;border-radius:0;box-shadow:none}
+.header{align-items:flex-start;flex-direction:column;margin-bottom:14px}
+.title{font-size:21px;line-height:1.15;letter-spacing:.02em}
+.subtitle{font-size:13px;line-height:1.45}
+.badge{font-size:11px}
+.card{padding:15px 13px;border-radius:14px;margin-bottom:13px}
+.card-title{font-size:17px;margin-bottom:12px}
+.grid{grid-template-columns:1fr;gap:11px}
+.label{font-size:12px;letter-spacing:.05em}
+.input,.select{width:100%;min-height:44px;padding:10px 12px;font-size:16px}
+.detail-header{align-items:stretch!important;flex-direction:column;gap:4px}
+.button-row{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}
+.button-row .btn{justify-content:center;min-height:42px;padding:9px 10px;font-size:13px}
+#btn-export-word{grid-column:1/-1}
+.table-wrapper{overflow:visible}
+#cost-table{display:block;min-width:0;width:100%}
+#cost-table thead{display:none}
+#cost-table tbody{display:grid;gap:12px}
+#cost-table tr{display:block;padding:12px;border:1px solid #dbe3f0;border-radius:14px;background:#f8faff;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+#cost-table td{display:grid;grid-template-columns:minmax(88px,34%) 1fr;align-items:center;gap:9px;padding:6px 0;background:transparent;text-align:left}
+#cost-table td::before{content:attr(data-label);font-size:11px;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:#64748b}
+#cost-table td input,#cost-table td select{min-width:0;min-height:42px;padding:9px 10px;font-size:16px}
+#cost-table td:last-child{grid-template-columns:1fr 1fr;margin-top:4px;gap:8px}
+#cost-table td:last-child::before{display:none}
+#cost-table td:last-child .btn{justify-content:center;min-height:40px;margin:0;padding:8px 6px;font-size:12px}
+.summary{grid-template-columns:1fr}
+.summary-box{padding:15px 14px}
+.summary-box .grid{grid-template-columns:1fr!important}
+.summary-row{gap:12px}
+.summary-label{font-size:13px}
+.summary-value{font-size:16px}
+.summary-highlight{font-size:20px}
+.summary-input{width:100%;min-height:44px;font-size:16px}
+.footer{flex-direction:column;gap:4px;line-height:1.4}
+}
 @media print{
 body{background:#fff;color:#000}
 .container{margin:0;padding:0;box-shadow:none;border-radius:0;background:#fff}
@@ -68,7 +106,7 @@ input,textarea,select{border:none!important;background:transparent!important;box
       <h1 class="title">Preventivo viaggio scolastico</h1>
       <p class="subtitle">Calcolo quote con gestione voci, stampa professionale con logo.</p>
     </div>
-    <span class="badge">Versione v2</span>
+    <span class="badge">Versione mobile</span>
   </div>
 
   <section class="card">
@@ -115,7 +153,7 @@ input,textarea,select{border:none!important;background:transparent!important;box
   </div>
 
   <section class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
+    <div class="detail-header" style="display:flex;justify-content:space-between;align-items:center">
       <h2 class="card-title">Dettaglio costi</h2>
       <div class="button-row screen-only">
         <button type="button" class="btn btn-primary btn-small" id="btn-add">＋ Aggiungi voce</button>
@@ -183,15 +221,15 @@ function n(v){if(!v)return 0;var s=v.toString().replace("€","").replace(",",".
 function euro(x){var v=x||0;return "€ "+v.toFixed(2).replace(".",",")}
 function updPartecipanti(){var st=n(document.getElementById("tot-studenti").value);var dc=n(document.getElementById("tot-docenti").value);var tot=st+dc;document.getElementById("tot-partecipanti").value=tot;return {st:st,dc:dc,tot:tot}}
 function mkRow(voce,categoria,prezzo,giorni,persone,tipo,note){var tr=document.createElement("tr");tr.innerHTML=
-  '<td><input type="text" class="voce" value="'+(voce||'')+'"></td>'+
-  '<td><input type="text" class="categoria" value="'+(categoria||'')+'"></td>'+
-  '<td><input type="text" class="prezzo numeric" value="'+(prezzo!=null?prezzo:0)+'"></td>'+
-  '<td><input type="text" class="giorni numeric" value="'+(giorni!=null?giorni:1)+'"></td>'+
-  '<td><input type="text" class="persone numeric" value="'+(persone!=null?persone:'')+'" placeholder="Vuoto = tutti i partecipanti"></td>'+
-  '<td><input type="text" class="totale" value="€ 0,00" readonly></td>'+
-  '<td><select class="tipo select"><option '+((tipo==='Obbligatorio')?'selected':'')+' value="Obbligatorio">Obbligatorio</option><option '+((tipo==='Opzionale')?'selected':'')+' value="Opzionale">Opzionale</option></select></td>'+
-  '<td><input type="text" class="note" value="'+(note||'')+'"></td>'+
-  '<td style="white-space:nowrap"><button type="button" class="btn btn-outline btn-small dup">⧉ Duplica</button> <button type="button" class="btn btn-outline btn-small rem">✖ Rimuovi</button></td>';
+  '<td data-label="Voce"><input type="text" class="voce" value="'+(voce||'')+'"></td>'+
+  '<td data-label="Categoria"><input type="text" class="categoria" value="'+(categoria||'')+'"></td>'+
+  '<td data-label="Prezzo/persona"><input type="text" inputmode="decimal" class="prezzo numeric" value="'+(prezzo!=null?prezzo:0)+'"></td>'+
+  '<td data-label="Giorni"><input type="text" inputmode="numeric" class="giorni numeric" value="'+(giorni!=null?giorni:1)+'"></td>'+
+  '<td data-label="N. persone"><input type="text" inputmode="numeric" class="persone numeric" value="'+(persone!=null?persone:'')+'" placeholder="Vuoto = tutti"></td>'+
+  '<td data-label="Totale"><input type="text" class="totale" value="€ 0,00" readonly></td>'+
+  '<td data-label="Tipo"><select class="tipo select"><option '+((tipo==='Obbligatorio')?'selected':'')+' value="Obbligatorio">Obbligatorio</option><option '+((tipo==='Opzionale')?'selected':'')+' value="Opzionale">Opzionale</option></select></td>'+
+  '<td data-label="Note"><input type="text" class="note" value="'+(note||'')+'"></td>'+
+  '<td data-label="Azioni" style="white-space:nowrap"><button type="button" class="btn btn-outline btn-small dup">⧉ Duplica</button> <button type="button" class="btn btn-outline btn-small rem">✖ Rimuovi</button></td>';
   document.getElementById("cost-body").appendChild(tr);
   tr.querySelectorAll(".numeric, .voce, .categoria, .note, .tipo").forEach(function(i){i.addEventListener("input",updAll)});
   tr.querySelector(".rem").addEventListener("click",function(){tr.parentNode.removeChild(tr);updAll()});

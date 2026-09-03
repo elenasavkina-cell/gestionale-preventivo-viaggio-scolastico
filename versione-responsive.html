@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Gestionale Preventivo Viaggio Scolastico</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#1f3c88,#4e9af1);color:#132743}
+.container{max-width:1100px;margin:32px auto;padding:24px;background:#f7f9fc;border-radius:18px;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.title{margin:0;font-size:26px;letter-spacing:.04em;text-transform:uppercase;color:#1f3c88}
+.subtitle{margin:4px 0 0;font-size:14px;color:#4b5b82}
+.badge{padding:6px 12px;font-size:12px;border-radius:999px;background:rgba(79,209,197,.12);color:#0f766e;border:1px solid rgba(79,209,197,.4)}
+.card{background:#fff;border-radius:16px;padding:16px 18px 18px;box-shadow:0 10px 26px rgba(15,23,42,.08);margin-bottom:16px}
+.card-title{font-size:16px;font-weight:600;color:#1f2937;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:4px}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#6b7280}
+.input,.select{padding:8px 10px;border-radius:10px;border:1px solid #d1d5db;font-size:13px;background:#f9fafb}
+.input:focus,.select:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 1px rgba(79,70,229,.15);background:#fff}
+.button-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.btn{border:none;border-radius:999px;padding:8px 14px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#4f46e5;color:#e5e7eb;box-shadow:0 10px 22px rgba(79,70,229,.4)}
+.btn-primary:hover{background:#4338ca}
+.btn-outline{background:#fff;color:#374151;border:1px solid #cbd5e1}
+.btn-outline:hover{background:#f3f4f6}
+.btn-small{padding:5px 10px;font-size:11px}
+.table-wrapper{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px}
+thead{background:#111827;color:#f9fafb}
+th,td{padding:8px;text-align:left}
+th{font-weight:500;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+tbody tr:nth-child(odd){background:#f9fafb}
+tbody tr:nth-child(even){background:#eef2ff}
+td input,td select{width:100%;padding:6px 8px;border-radius:8px;border:1px solid #d1d5db;font-size:12px;background:#fff}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.summary-box{background:#0f172a;color:#e5e7eb;border-radius:16px;padding:16px 18px}
+.summary-title{font-size:14px;font-weight:600;margin:0 0 8px;color:#a5b4fc;text-transform:uppercase;letter-spacing:.08em}
+.summary-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.summary-label{font-size:12px;color:#9ca3af}
+.summary-value{font-size:15px;font-weight:600}
+.summary-highlight{font-size:18px;font-weight:700;color:#facc15}
+.summary-input{width:80px;padding:6px 8px;border-radius:999px;border:1px solid #4b5563;background:#020617;color:#e5e7eb;text-align:right;font-size:12px}
+.footer{margin-top:10px;font-size:11px;color:#6b7280;display:flex;justify-content:space-between}
+.screen-only{display:block}
+.print-only{display:none}
+@media (max-width:700px){
+html{overflow-x:hidden}
+body{background:#eef3fb;overflow-x:hidden}
+.container{width:100%;max-width:none;margin:0;padding:14px 12px 28px;border-radius:0;box-shadow:none}
+.header{align-items:flex-start;flex-direction:column;margin-bottom:14px}
+.title{font-size:21px;line-height:1.15;letter-spacing:.02em}
+.subtitle{font-size:13px;line-height:1.45}
+.badge{font-size:11px}
+.card{padding:15px 13px;border-radius:14px;margin-bottom:13px}
+.card-title{font-size:17px;margin-bottom:12px}
+.grid{grid-template-columns:1fr;gap:11px}
+.label{font-size:12px;letter-spacing:.05em}
+.input,.select{width:100%;min-height:44px;padding:10px 12px;font-size:16px}
+.detail-header{align-items:stretch!important;flex-direction:column;gap:4px}
+.button-row{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px}
+.button-row .btn{justify-content:center;min-height:42px;padding:9px 10px;font-size:13px}
+#btn-export-word{grid-column:1/-1}
+.table-wrapper{overflow:visible}
+#cost-table{display:block;min-width:0;width:100%}
+#cost-table thead{display:none}
+#cost-table tbody{display:grid;gap:12px}
+#cost-table tr{display:block;padding:12px;border:1px solid #dbe3f0;border-radius:14px;background:#f8faff;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+#cost-table td{display:grid;grid-template-columns:minmax(88px,34%) 1fr;align-items:center;gap:9px;padding:6px 0;background:transparent;text-align:left}
+#cost-table td::before{content:attr(data-label);font-size:11px;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:#64748b}
+#cost-table td input,#cost-table td select{min-width:0;min-height:42px;padding:9px 10px;font-size:16px}
+#cost-table td:last-child{grid-template-columns:1fr 1fr;margin-top:4px;gap:8px}
+#cost-table td:last-child::before{display:none}
+#cost-table td:last-child .btn{justify-content:center;min-height:40px;margin:0;padding:8px 6px;font-size:12px}
+.summary{grid-template-columns:1fr}
+.summary-box{padding:15px 14px}
+.summary-box .grid{grid-template-columns:1fr!important}
+.summary-row{gap:12px}
+.summary-label{font-size:13px}
+.summary-value{font-size:16px}
+.summary-highlight{font-size:20px}
+.summary-input{width:100%;min-height:44px;font-size:16px}
+.footer{flex-direction:column;gap:4px;line-height:1.4}
+}
+@media print{
+body{background:#fff;color:#000}
+.container{margin:0;padding:0;box-shadow:none;border-radius:0;background:#fff}
+.screen-only{display:none!important}
+.print-only{display:block!important}
+.header,.button-row,.footer{display:none!important}
+.card{box-shadow:none;border-radius:0;padding:0}
+table,th,td{color:#000}
+input,textarea,select{border:none!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+.print-header{display:grid;grid-template-columns:1fr;gap:6px;align-items:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:12px}
+.print-header h2{margin:0;font-size:20pt;font-weight:700}
+.print-header p{margin:2px 0 0;font-size:11pt}
+.print-footer{border-top:1px solid #000;margin-top:12px;padding-top:8px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1 class="title">Preventivo viaggio scolastico</h1>
+      <p class="subtitle">Calcolo quote con gestione voci, stampa professionale con logo.</p>
+    </div>
+    <span class="badge">Versione mobile</span>
+  </div>
+
+  <section class="card">
+    <h2 class="card-title">Dati viaggio</h2>
+    <div class="grid">
+      <div class="field">
+        <span class="label">Istituto</span>
+        <input id="istituto" class="input" type="text" placeholder="Es. I.C. Verdi">
+      </div>
+      <div class="field">
+        <span class="label">Docente referente</span>
+        <input id="docente" class="input" type="text" placeholder="Nome e cognome">
+      </div>
+      <div class="field">
+        <span class="label">Destinazione</span>
+        <input id="destinazione" class="input" type="text" placeholder="Es. Roma, Parigi, Berlino">
+      </div>
+      <div class="field">
+        <span class="label">Data partenza</span>
+        <input id="data-partenza" class="input" type="date">
+      </div>
+      <div class="field">
+        <span class="label">Data ritorno</span>
+        <input id="data-ritorno" class="input" type="date">
+      </div>
+      <div class="field">
+        <span class="label">Tot studenti</span>
+        <input id="tot-studenti" class="input numeric" type="number" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <span class="label">Tot docenti</span>
+        <input id="tot-docenti" class="input numeric" type="number" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <span class="label">Tot partecipanti</span>
+        <input id="tot-partecipanti" class="input" type="number" readonly value="0">
+      </div>
+      
+    </div>
+  </section>
+
+  <div class="print-only print-header">
+    <h2 id="print-istituto">Istituto</h2>
+  </div>
+
+  <section class="card">
+    <div class="detail-header" style="display:flex;justify-content:space-between;align-items:center">
+      <h2 class="card-title">Dettaglio costi</h2>
+      <div class="button-row screen-only">
+        <button type="button" class="btn btn-primary btn-small" id="btn-add">＋ Aggiungi voce</button>
+        <button type="button" class="btn btn-outline btn-small" id="btn-reset">⟳ Svuota</button>
+        <button type="button" class="btn btn-outline btn-small" id="btn-export-word">⬇ Esporta Word</button>
+      </div>
+    </div>
+    <div class="table-wrapper">
+      <table id="cost-table">
+        <thead>
+          <tr>
+            <th>Voce</th>
+            <th>Categoria</th>
+            <th>Prezzo per persona (€)</th>
+            <th>Giorni</th>
+            <th>Numero persone</th>
+            <th>Totale (€)</th>
+            <th>Tipo</th>
+            <th>Note</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="cost-body">
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Riepilogo e quote</h2>
+    <div class="summary">
+      <div class="summary-box">
+        <h3 class="summary-title">Totali economici</h3>
+        <div class="summary-row"><span class="summary-label">Totale costi</span><span class="summary-value" id="tot-costi">€ 0,00</span></div>
+        <div class="summary-row"><span class="summary-label">Margine agenzia</span><span class="summary-value" id="margine-euro">€ 0,00</span></div>
+        <div class="summary-row"><span class="summary-label">Totale da fatturare</span><span class="summary-highlight" id="tot-fatturare">€ 0,00</span></div>
+      </div>
+      <div class="summary-box">
+        <h3 class="summary-title">Quote</h3>
+        <div class="grid" style="grid-template-columns:repeat(2,1fr)">
+          <div class="field"><span class="label">Margine (%)</span><input id="margine" class="summary-input numeric" type="text" value="10"></div>
+          <div class="field"><span class="label">Quota studente</span><input id="quota-studente" class="input" type="text" readonly value="€ 0,00"></div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#9ca3af">Docenti e autista non pagano. La quota è ripartita solo sugli studenti.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="print-only print-footer">
+    <p><strong>Equestre Tour – Good Travel</strong></p>
+    <p>Via Mazzini, 53 – 71016 San Severo (FG)</p>
+    <p>📞 Tel: 0882 22 81 22 – 02 928 540 66</p>
+    <p>📱 WhatsApp: 0882 33 81 22</p>
+    <p>✉️ Email: online@viaggiafacile.net</p>
+    <p>🌐 Web: www.equestretour.com</p>
+  </div>
+
+  <div class="footer">
+    <span>Modello per preventivi viaggi di istruzione</span>
+    <span>Funziona offline nel tuo browser</span>
+  </div>
+</div>
+<script>
+function n(v){if(!v)return 0;var s=v.toString().replace("€","").replace(",",".").trim();var x=parseFloat(s);return isNaN(x)?0:x}
+function euro(x){var v=x||0;return "€ "+v.toFixed(2).replace(".",",")}
+function updPartecipanti(){var st=n(document.getElementById("tot-studenti").value);var dc=n(document.getElementById("tot-docenti").value);var tot=st+dc;document.getElementById("tot-partecipanti").value=tot;return {st:st,dc:dc,tot:tot}}
+function mkRow(voce,categoria,prezzo,giorni,persone,tipo,note){var tr=document.createElement("tr");tr.innerHTML=
+  '<td data-label="Voce"><input type="text" class="voce" value="'+(voce||'')+'"></td>'+
+  '<td data-label="Categoria"><input type="text" class="categoria" value="'+(categoria||'')+'"></td>'+
+  '<td data-label="Prezzo/persona"><input type="text" inputmode="decimal" class="prezzo numeric" value="'+(prezzo!=null?prezzo:0)+'"></td>'+
+  '<td data-label="Giorni"><input type="text" inputmode="numeric" class="giorni numeric" value="'+(giorni!=null?giorni:1)+'"></td>'+
+  '<td data-label="N. persone"><input type="text" inputmode="numeric" class="persone numeric" value="'+(persone!=null?persone:'')+'" placeholder="Vuoto = tutti"></td>'+
+  '<td data-label="Totale"><input type="text" class="totale" value="€ 0,00" readonly></td>'+
+  '<td data-label="Tipo"><select class="tipo select"><option '+((tipo==='Obbligatorio')?'selected':'')+' value="Obbligatorio">Obbligatorio</option><option '+((tipo==='Opzionale')?'selected':'')+' value="Opzionale">Opzionale</option></select></td>'+
+  '<td data-label="Note"><input type="text" class="note" value="'+(note||'')+'"></td>'+
+  '<td data-label="Azioni" style="white-space:nowrap"><button type="button" class="btn btn-outline btn-small dup">⧉ Duplica</button> <button type="button" class="btn btn-outline btn-small rem">✖ Rimuovi</button></td>';
+  document.getElementById("cost-body").appendChild(tr);
+  tr.querySelectorAll(".numeric, .voce, .categoria, .note, .tipo").forEach(function(i){i.addEventListener("input",updAll)});
+  tr.querySelector(".rem").addEventListener("click",function(){tr.parentNode.removeChild(tr);updAll()});
+  tr.querySelector(".dup").addEventListener("click",function(){
+    var newTr = mkRow(
+      tr.querySelector(".voce").value,
+      tr.querySelector(".categoria").value,
+      tr.querySelector(".prezzo").value,
+      tr.querySelector(".giorni").value,
+      tr.querySelector(".persone").value,
+      tr.querySelector(".tipo").value,
+      tr.querySelector(".note").value
+    );
+    if (tr && tr.parentNode && newTr) {
+      tr.parentNode.insertBefore(newTr, tr.nextSibling);
+    }
+    updAll();
+  });
+  return tr;
+}
+function updCosti(){var rows=document.querySelectorAll("#cost-body tr");var tot=0;rows.forEach(function(r){
+  var p=n(r.querySelector(".prezzo").value);
+  var g=n(r.querySelector(".giorni").value);
+  var pe=n(r.querySelector(".persone").value);
+  if(pe<=0){pe=n(document.getElementById("tot-partecipanti").value)}
+  var t=p*g*pe;
+  r.querySelector(".totale").value=euro(t);
+  tot+=t;
+});return tot}
+function updRiepilogo(){
+  var part=updPartecipanti();
+  var costi=updCosti();
+  var marg=n(document.getElementById("margine").value);
+  var margEuro=costi*(marg/100);
+  var fatt=costi+margEuro;
+  document.getElementById("tot-costi").textContent=euro(costi);
+  document.getElementById("margine-euro").textContent=euro(margEuro);
+  document.getElementById("tot-fatturare").textContent=euro(fatt);
+  var qStu=part.st>0?fatt/part.st:0;
+  document.getElementById("quota-studente").value=euro(qStu);
+}
+function resetAll(){
+  document.getElementById("istituto").value="";
+  document.getElementById("docente").value="";
+  document.getElementById("destinazione").value="";
+  document.getElementById("data-partenza").value="";
+  document.getElementById("data-ritorno").value="";
+  document.getElementById("tot-studenti").value="0";
+  document.getElementById("tot-docenti").value="0";
+  document.getElementById("cost-body").innerHTML="";
+  defaultRows();
+  updAll();
+}
+function defaultRows(){
+  mkRow("Hotel mezza pensione","Alloggio",45,3,"","Obbligatorio","Sistemazione studenti e docenti");
+  mkRow("Trasporto bus","Trasporto",30,1,"","Obbligatorio","Andata/ritorno in pullman");
+  mkRow("Pensione completa","Pasti",25,3,"","Obbligatorio","Pranzi e cene");
+  mkRow("Assicurazione","Servizi",5,1,"","Obbligatorio","Copertura partecipanti");
+  mkRow("Visite e ingressi","Attività",15,3,"","Opzionale","Musei, guide, attività");
+}
+function preparePrintHeader(){
+  var ist=document.getElementById("istituto").value||"Istituto";
+  var h2=document.getElementById("print-istituto");
+  if(h2)h2.textContent=ist;
+}
+function updAll(){updRiepilogo()}
+document.addEventListener("DOMContentLoaded",function(){
+  defaultRows();
+  document.querySelectorAll(".numeric").forEach(function(i){i.addEventListener("input",updAll)});
+  document.getElementById("margine").addEventListener("input",updAll);
+  document.getElementById("tot-studenti").addEventListener("input",updAll);
+  document.getElementById("tot-docenti").addEventListener("input",updAll);
+  document.getElementById("btn-add").addEventListener("click",function(){mkRow("", "", 0, 1, "", "Opzionale", "");updAll()});
+  document.getElementById("btn-reset").addEventListener("click",resetAll);
+  document.getElementById("btn-export-word").addEventListener("click",function(){exportWord()});
+  updAll();
+});
+function buildDocHTML(){
+  var ist=document.getElementById("istituto").value||"Istituto";
+  var dest=document.getElementById("destinazione").value||"";
+  var dp=document.getElementById("data-partenza").value||"";
+  var dr=document.getElementById("data-ritorno").value||"";
+  var st=document.getElementById("tot-studenti").value||"0";
+  var dc=document.getElementById("tot-docenti").value||"0";
+  var tot=document.getElementById("tot-partecipanti").value||"0";
+  var rows=document.querySelectorAll("#cost-body tr");
+  var tbl="";
+  rows.forEach(function(r){
+    var voce=r.querySelector(".voce").value;
+    var cat=r.querySelector(".categoria").value;
+    var prezzo=r.querySelector(".prezzo").value;
+    var giorni=r.querySelector(".giorni").value;
+    var persone=r.querySelector(".persone").value||tot;
+    var totale=r.querySelector(".totale").value;
+    var tipo=r.querySelector(".tipo").value;
+    var note=r.querySelector(".note").value;
+    tbl+=
+      "<tr>"+
+      "<td>"+voce+"</td>"+
+      "<td>"+cat+"</td>"+
+      "<td>"+prezzo+"</td>"+
+      "<td>"+giorni+"</td>"+
+      "<td>"+persone+"</td>"+
+      "<td>"+totale+"</td>"+
+      "<td>"+tipo+"</td>"+
+      "<td>"+note+"</td>"+
+      "</tr>";
+  });
+  var totCost=document.getElementById("tot-costi").textContent;
+  var margEuro=document.getElementById("margine-euro").textContent;
+  var totFatt=document.getElementById("tot-fatturare").textContent;
+  var quotaStud=document.getElementById("quota-studente").value;
+  var agencyFooter = '<strong>Equestre Tour – Good Travel</strong><br>Via Mazzini, 53 – 71016 San Severo (FG)<br>📞 Tel: 0882 22 81 22 – 02 928 540 66<br>📱 WhatsApp: 0882 33 81 22<br>✉️ Email: online@viaggiafacile.net<br>🌐 Web: www.equestretour.com';
+  var html=
+    '<html><head><meta charset="utf-8"><style>'+
+    'body{font-family:"Segoe UI",sans-serif;font-size:12pt;color:#000}'+
+    '.header{display:block;margin-bottom:12pt;border-bottom:1pt solid #000;padding-bottom:8pt}'+
+    'h1{font-size:18pt;margin:0 0 4pt}'+
+    'table{width:100%;border-collapse:collapse;margin-top:6pt}'+
+    'th,td{border:1pt solid #000;padding:6pt;text-align:left}'+
+    'th{background:#eee}'+
+    '.summary{margin-top:10pt}'+
+    '.summary div{margin:2pt 0}'+
+    '.footer{margin-top:12pt;border-top:1pt solid #000;padding-top:8pt;font-size:10pt}'+
+    '</style></head><body>'+
+    '<div class="header">'+
+        '<h1>Preventivo viaggio scolastico</h1>'+
+        '<div><strong>Istituto:</strong> '+ist+'</div>'+
+        (dest?'<div><strong>Destinazione:</strong> '+dest+'</div>':'')+
+        (dp?'<div><strong>Data partenza:</strong> '+dp+'</div>':'')+
+        (dr?'<div><strong>Data ritorno:</strong> '+dr+'</div>':'')+
+        '<div><strong>Studenti:</strong> '+st+' • <strong>Docenti:</strong> '+dc+' • <strong>Partecipanti:</strong> '+tot+'</div>'+
+    '</div>'+
+    '<table><thead><tr>'+
+    '<th>Voce</th><th>Categoria</th><th>Prezzo</th><th>Giorni</th><th>Persone</th><th>Totale</th><th>Tipo</th><th>Note</th>'+
+    '</tr></thead><tbody>'+tbl+'</tbody></table>'+
+    '<div class="summary">'+
+      '<div><strong>Totale costi:</strong> '+totCost+'</div>'+
+      '<div><strong>Margine agenzia:</strong> '+margEuro+'</div>'+
+      '<div><strong>Totale da fatturare:</strong> '+totFatt+'</div>'+
+      '<div><strong>Quota per studente:</strong> '+quotaStud+'</div>'+
+      '<div><em>Docenti e autista non pagano; la quota è ripartita solo sugli studenti.</em></div>'+
+    '</div>'+
+    '<div class="footer">'+agencyFooter+'</div>'+
+    '</body></html>';
+  return html;
+}
+function exportWord(){
+  preparePrintHeader();
+  updAll();
+  var html=buildDocHTML();
+  var blob=new Blob(['\ufeff', html],{type:'application/msword'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='Preventivo_viaggio_scolastico.doc';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},0);
+}
+</script>
+</body>
+</html>
